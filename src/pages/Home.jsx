@@ -57,10 +57,12 @@ function reducer(state, action) {
       };
       break;
     case "HANDLE_CHECK":
-        action.payload.done ? "" : alert("Task completed !")
+      action.payload.done ? "" : alert("Task completed !");
       return {
         ...state,
-        tasks : state.tasks.map((task)=> task.id === action.payload.id ? {...task, done: !task.done} : task)
+        tasks: state.tasks.map((task) =>
+          task.id === action.payload.id ? { ...task, done: !task.done } : task
+        ),
       };
   }
 }
@@ -74,6 +76,7 @@ function Home() {
 
   return (
     <>
+      <div className="container">
       <div className="input">
         <input
           type="text"
@@ -84,7 +87,7 @@ function Home() {
           }
         />
         <button onClick={() => dispatch({ type: "HANDLE_ADD_TASK" })}>
-          {state.isEditing ? "Edit Task" : "Add Task"}
+          {state.isEditing ? "Edit" : "Add"}
         </button>
       </div>
       {/* result */}
@@ -93,7 +96,14 @@ function Home() {
           {state.tasks.map((obj) => {
             return (
               <li key={obj.id}>
-                <label htmlFor={obj.id}>{obj.body}</label>
+                <label
+                  htmlFor={obj.id}
+                  className={`${obj.done ? "strike-through" : ""}`}
+                >
+                  {obj.body}
+                </label>
+                
+                <div className="actions">
                 <span>
                   <input
                     type="checkbox"
@@ -104,7 +114,6 @@ function Home() {
                     }
                   />
                 </span>
-                <div className="actions">
                   <span
                     onClick={() =>
                       dispatch({ type: "HANDLE_EDIT", payload: obj })
@@ -117,13 +126,14 @@ function Home() {
                       dispatch({ type: "HANDLE_DELETE", payload: obj.id })
                     }
                   >
-                    delete
+                    Delete
                   </span>
                 </div>
               </li>
             );
           })}
         </ul>
+      </div>
       </div>
     </>
   );
